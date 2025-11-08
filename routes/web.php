@@ -38,3 +38,5 @@ Route::get('/employer/analysis', [App\Http\Controllers\Employer\AnalysisControll
 
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
+

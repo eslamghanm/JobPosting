@@ -7,43 +7,42 @@ use Illuminate\Database\Eloquent\Model;
 
 class JobPost extends Model
 {
+
+    /** @use HasFactory<\Database\Factories\JobPostFactory> */
     use HasFactory;
-
-    protected $table = 'job_posts';
-
     protected $fillable = [
-        'company_id',
-        'category_id',
+        'user_id',
         'title',
-        'slug',
         'description',
         'responsibilities',
+        'skills',
+        'qualifications',
+        'salary_range',
+        'benefits',
+        'category',
         'location',
         'work_type',
-        'salary_min',
-        'salary_max',
-        'currency',
-        'experience_level',
-        'technologies',
-        'status',
-        'posted_at',
+        'branding_image',
         'application_deadline',
+        'status',
     ];
-
     protected $casts = [
-        'posted_at' => 'datetime',
-        'application_deadline' => 'datetime',
-        'technologies' => 'array',
+        'skills' => 'array',
+        'qualifications' => 'array',
     ];
 
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+    // public function applications()
+    // {
+    //     return $this->hasMany(JobApplication::class);
+    // }
+
+    // public function comments()
+    // {
+    //     return $this->morphMany(JobComment::class, 'commentable');
+    // }
 }
 

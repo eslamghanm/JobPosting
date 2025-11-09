@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class CandidateController extends Controller
 {
+    // Dashboard
     public function dashboard()
     {
-        $candidate = auth::user()->candidate;
+        $candidate = Auth::user()->candidate;
 
         $applications = $candidate->applications()
             ->with('job')
@@ -19,15 +21,17 @@ class CandidateController extends Controller
         return view('candidate.dashboard', compact('candidate', 'applications'));
     }
 
+    // Show Edit Profile Page
     public function editProfile()
     {
-        $candidate = auth::user()->candidate;
+        $candidate = Auth::user()->candidate;
         return view('candidate.edit-profile', compact('candidate'));
     }
 
+    // Update Profile
     public function updateProfile(Request $request)
     {
-        $candidate = auth::user()->candidate;
+        $candidate = Auth::user()->candidate;
 
         $request->validate([
             'phone' => 'nullable|string|max:50',
@@ -45,5 +49,18 @@ class CandidateController extends Controller
         $candidate->save();
 
         return back()->with('success', 'Profile updated.');
+    }
+
+    // Candidate Applications Page
+    public function applications()
+    {
+        $candidate = Auth::user()->candidate;
+
+        $applications = $candidate->applications()
+            ->with('job')
+            ->latest()
+            ->get();
+
+        return view('candidate.applications', compact('applications'));
     }
 }

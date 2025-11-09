@@ -1,10 +1,16 @@
 <?php
+
+namespace Database\Factories;
+
+use App\Models\JobPost;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JobPostFactory extends Factory
 {
+    protected $model = JobPost::class;
     public function definition(): array
     {
+
         $statuses = ['draft', 'published', 'closed', 'approved', 'rejected'];
 
         return [
@@ -21,7 +27,7 @@ class JobPostFactory extends Factory
             'benefits' => implode(', ', $this->faker->randomElements([
                 'Health Insurance', 'Paid Leave', 'Remote Work', 'Performance Bonus'
             ], rand(2, 3))),
-            'work_type' => $this->faker->randomElement(['remote', 'onsite', 'hybrid']),
+            'work_type' => $this->faker->randomElement(['remote', 'on-site', 'hybrid']),
             'location' => $this->faker->city(),
             'status' => $this->faker->randomElement($statuses),
             'application_deadline' => $this->faker->dateTimeBetween('now', '+2 months'),

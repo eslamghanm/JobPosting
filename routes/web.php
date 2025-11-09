@@ -23,32 +23,35 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])->name('candidate.dashboard');
 
-    Route::get('/candidate/profile', [CandidateController::class, 'editProfile'])->name('candidate.profile');
-    Route::post('/candidate/profile', [CandidateController::class, 'updateProfile'])->name('candidate.profile.update');
+    // Candidate Dashboard
+    Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])
+        ->name('candidate.dashboard');
 
-    // عرض جميع الوظائف + الفلترة
-    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+    // Candidate Profile (Edit & Update)
+    Route::get('/candidate/profile', [CandidateController::class, 'editProfile'])
+        ->name('candidate.profile');
+    Route::put('/candidate/profile', [CandidateController::class, 'updateProfile'])
+        ->name('candidate.updateProfile');
+    Route::get('/candidate/edit-profile', [CandidateController::class, 'editProfile'])
+        ->name('candidate.edit-profile');
 
-    // عرض تفاصيل وظيفة
-    Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
-
-    // تقديم على وظيفة
-    Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('jobs.apply');
-
+    // Candidate Applications
+    Route::get('/candidate/applications', [CandidateController::class, 'applications'])
+        ->name('candidate.applications');
 });
 
-
+require __DIR__ . '/candidate.php';
 
 
 require __DIR__.'/auth.php';
-require __DIR__ . '/candidate.php';
+
 
 Route::get('/employer', function () {
     return redirect()->route('employer.dashboard');
@@ -57,7 +60,7 @@ Route::get('/employer', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])->name('employer.dashboard');
     Route::resource('jobs', JobPostController::class);
-    Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications', [CandidateController::class, 'index']);
     Route::get('/job-listings', [JobListingController::class, 'index'])->name('employer.jobListings');
 });
 

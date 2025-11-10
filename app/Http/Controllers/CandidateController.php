@@ -7,13 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\Application;
 
-use Illuminate\Support\Facades\Auth;
 class CandidateController extends Controller
 {
     // Dashboard
     public function dashboard()
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+
+        if (!$candidate) {
+            $applications = collect();
+            $candidate = new Candidate();
+            return view('candidate.dashboard', compact('candidate', 'applications'));
+        }
 
         $applications = $candidate->applications()
             ->with('job')
@@ -26,14 +31,20 @@ class CandidateController extends Controller
     // Show Edit Profile Page
     public function editProfile()
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+        if (!$candidate) {
+            $candidate = new Candidate();
+        }
         return view('candidate.edit-profile', compact('candidate'));
     }
 
     // Update Profile
     public function updateProfile(Request $request)
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+        if (!$candidate) {
+            return back()->with('error', 'No candidate found.');
+        }
 
         $request->validate([
             'phone' => 'nullable|string|max:50',
@@ -56,7 +67,11 @@ class CandidateController extends Controller
     // Candidate Applications Page
     public function applications()
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+        if (!$candidate) {
+            $applications = collect();
+            return view('candidate.applications', compact('applications'));
+        }
 
         $applications = $candidate->applications()
             ->with('job')
@@ -66,24 +81,30 @@ class CandidateController extends Controller
         return view('candidate.applications', compact('applications'));
     }
 
-
     // Show apply form
     public function showApplyForm(JobPost $job)
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+        if (!$candidate) {
+            $candidate = new Candidate();
+        }
+
         return view('candidate.apply', compact('job', 'candidate'));
     }
 
     // Submit application
     public function submitApplication(Request $request, JobPost $job)
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $candidate = Candidate::first();
+        if (!$candidate) {
+            return back()->with('error', 'No candidate found.');
+        }
 
         $request->validate([
             'resume' => 'nullable|mimes:pdf|max:2048',
         ]);
 
-        $resumePath = $candidate->resume; // default resume
+        $resumePath = $candidate->resume ?? null; // default resume
         if ($request->hasFile('resume')) {
             $resumePath = $request->file('resume')->store('resumes', 'public');
         }

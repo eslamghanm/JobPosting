@@ -45,6 +45,11 @@ Route::middleware(['auth'])->group(function () {
     // Candidate Applications
     Route::get('/candidate/applications', [CandidateController::class, 'applications'])
         ->name('candidate.applications');
+    // Show apply form for a job
+    Route::get('jobs/{job}/apply', [CandidateController::class, 'showApplyForm'])->name('candidate.jobs.apply');
+
+    // Submit application
+    Route::post('jobs/{job}/apply', [CandidateController::class, 'submitApplication'])->name('candidate.jobs.submit');
 });
 
 require __DIR__ . '/candidate.php';

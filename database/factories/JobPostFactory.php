@@ -27,8 +27,7 @@ class JobPostFactory extends Factory
             'benefits' => implode(', ', $this->faker->randomElements([
                 'Health Insurance', 'Paid Leave', 'Remote Work', 'Performance Bonus'
             ], rand(2, 3))),
-            'work_type' => $this->faker->randomElement(['remote', 'on-site', 'hybrid']),
-            'location' => $this->faker->city(),
+            'work_type' => $this->faker->randomElement(['remote', 'onsite', 'hybrid']),            'location' => $this->faker->city(),
             'status' => $this->faker->randomElement($statuses),
             'application_deadline' => $this->faker->dateTimeBetween('now', '+2 months'),
             'user_id' => 1, // will be replaced dynamically in seeder

@@ -27,10 +27,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function candidate(): HasOne
-    {
-        return $this->hasOne(Candidate::class);
-    }
 
-    
+
+
 }

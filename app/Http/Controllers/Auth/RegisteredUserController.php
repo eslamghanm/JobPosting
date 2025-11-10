@@ -50,10 +50,7 @@ class RegisteredUserController extends Controller
             'profile_image' => $path,
             'role' => 'candidate'
         ]);
-        $user->candidate()->create([
-            'phone' => $request->phone ?? '',
-            'address' => $request->address ?? '',
-        ]);
+        
 
         event(new Registered($user));
 

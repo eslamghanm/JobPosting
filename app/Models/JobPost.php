@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class JobPost extends Model
 {
+
     /** @use HasFactory<\Database\Factories\JobPostFactory> */
     use HasFactory;
     protected $fillable = [
@@ -45,3 +46,4 @@ class JobPost extends Model
     }
 
 }
+

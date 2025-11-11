@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Policies\ApplicationsPolicy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\JobPost;
 
+#[UsePolicy(ApplicationsPolicy::class)]
 class Application extends Model
 {
     use HasFactory;

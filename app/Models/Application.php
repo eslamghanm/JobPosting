@@ -4,27 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\JobPost;
 
 class Application extends Model
 {
-
     use HasFactory;
 
     protected $fillable = [
-        'candidate_id',
+        'user_id', // يبقى user_id
         'job_id',
         'resume',
         'status',
     ];
 
-    public function candidate()
+    // بدل candidate نستخدم user
+    public function user()
     {
-        return $this->belongsTo(Candidate::class);
+        return $this->belongsTo(User::class, 'candidate_id'); // الاسم القديم للحقل
     }
 
     public function job()
     {
         return $this->belongsTo(JobPost::class);
     }
-
 }

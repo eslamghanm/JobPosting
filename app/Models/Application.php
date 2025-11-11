@@ -21,7 +21,7 @@ class Application extends Model
     // بدل candidate نستخدم user
     public function user()
     {
-        return $this->belongsTo(User::class, 'candidate_id'); // الاسم القديم للحقل
+        return $this->belongsTo(User::class, 'user_id'); 
     }
 
     public function job()

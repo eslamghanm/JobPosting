@@ -97,14 +97,19 @@ class CandidateController extends Controller
 
     public function editApplication(Application $application)
     {
-        $this->authorize('update', $application);
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $user = Auth::user();
         return view('candidate.edit-application', compact('application', 'user'));
     }
 
     public function updateApplication(Request $request, Application $application)
     {
-        $this->authorize('update', $application);
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         $request->validate([
             'resume' => 'nullable|mimes:pdf|max:2048',
@@ -123,7 +128,10 @@ class CandidateController extends Controller
 
     public function deleteApplication(Application $application)
     {
-        $this->authorize('delete', $application);
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $application->delete();
         return back()->with('success', 'Application deleted.');
     }

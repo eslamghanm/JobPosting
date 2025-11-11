@@ -31,31 +31,24 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware(['auth'])->group(function () {
 
+Route::middleware('auth')->group(function () {
+    Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])->name('candidate.dashboard');
+    Route::get('/candidate/profile', [CandidateController::class, 'editProfile'])->name('candidate.profile');
+    Route::put('/candidate/profile', [CandidateController::class, 'updateProfile'])->name('candidate.updateProfile');
 
-    // Candidate Dashboard
-    Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])
-        ->name('candidate.dashboard');
+    Route::get('/candidate/jobs', [CandidateController::class, 'jobPosts'])->name('candidate.jobs');
+    Route::get('/candidate/jobs/{job}/apply', [CandidateController::class, 'showApplyForm'])->name('candidate.jobs.apply');
+    Route::post('/candidate/jobs/{job}/apply', [CandidateController::class, 'submitApplication'])->name('candidate.jobs.submit');
 
-    // Candidate Profile (Edit & Update)
-    Route::get('/candidate/profile', [CandidateController::class, 'editProfile'])
-        ->name('candidate.profile');
-    Route::put('/candidate/profile', [CandidateController::class, 'updateProfile'])
-        ->name('candidate.updateProfile');
-    Route::get('/candidate/edit-profile', [CandidateController::class, 'editProfile'])
-        ->name('candidate.edit-profile');
-
-    // Candidate Applications
-    Route::get('/candidate/applications', [CandidateController::class, 'applications'])
-        ->name('candidate.applications');
-    // Show apply form for a job
-    Route::get('jobs/{job}/apply', [CandidateController::class, 'showApplyForm'])->name('candidate.jobs.apply');
-
-    // Submit application
-    Route::post('jobs/{job}/apply', [CandidateController::class, 'submitApplication'])->name('candidate.jobs.submit');
+    Route::get('/candidate/applications', [CandidateController::class, 'applications'])->name('candidate.applications');
+    Route::get('/candidate/applications/{application}/edit', [CandidateController::class, 'editApplication'])->name('candidate.applications.edit');
+    Route::put('/candidate/applications/{application}', [CandidateController::class, 'updateApplication'])->name('candidate.applications.update');
+    Route::delete('/candidate/applications/{application}', [CandidateController::class, 'deleteApplication'])->name('candidate.applications.delete');
 
 });
+
+
 
 require __DIR__ . '/candidate.php';
 require __DIR__ . '/auth.php';

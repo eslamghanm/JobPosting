@@ -2,6 +2,10 @@
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">Apply for: {{ $job->title }}</h1>
 
+        @if(session('success'))
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">{{ session('success') }}</div>
+        @endif
+
         <div class="bg-white shadow rounded p-4">
             <p class="mb-4"><strong>Location:</strong> {{ $job->location ?? '-' }}</p>
             <p class="mb-4"><strong>Description:</strong> {{ $job->description }}</p>
@@ -12,8 +16,8 @@
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Resume (PDF)</label>
                     <input type="file" name="resume" class="border p-2 w-full rounded">
-                    @if($candidate->resume)
-                    <p class="text-sm text-gray-500 mt-1">Current: <a href="{{ asset('storage/' . $candidate->resume) }}" target="_blank">Download</a></p>
+                    @if($user->resume)
+                    <p class="text-sm text-gray-500 mt-1">Current: <a href="{{ asset('storage/' . $user->resume) }}" target="_blank">Download</a></p>
                     @endif
                 </div>
 

@@ -2,38 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Candidate;
 use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\Application;
-
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 class CandidateController extends Controller
 {
+    use AuthorizesRequests;
     // Dashboard
     public function dashboard()
     {
-        $candidate = Candidate::first(); // بدل Auth
-
-        $applications = $candidate->applications()
+        $user = Auth::user();
+        $applications = Application::where('user_id', $user->id)
             ->with('job')
             ->latest()
             ->get();
 
-        return view('candidate.dashboard', compact('candidate', 'applications'));
+        return view('candidate.dashboard', compact('user', 'applications'));
     }
 
-    // Show Edit Profile Page
+    // Profile
     public function editProfile()
     {
-        $candidate = Candidate::first(); // بدل Auth
-        return view('candidate.edit-profile', compact('candidate'));
+        $user = Auth::user();
+        return view('candidate.edit-profile', compact('user'));
     }
 
-    // Update Profile
     public function updateProfile(Request $request)
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $user = Auth::user();
 
         $request->validate([
             'phone' => 'nullable|string|max:50',
@@ -42,59 +41,98 @@ class CandidateController extends Controller
         ]);
 
         if ($request->hasFile('resume')) {
-            $path = $request->file('resume')->store('resumes', 'public');
-            $candidate->resume = $path;
+            $user->resume = $request->file('resume')->store('resumes', 'public');
         }
 
-        $candidate->phone = $request->phone;
-        $candidate->address = $request->address;
-        $candidate->save();
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->save();
 
         return back()->with('success', 'Profile updated.');
     }
 
-    // Candidate Applications Page
-    public function applications()
+    // Jobs
+    public function jobPosts()
     {
-        $candidate = Candidate::first(); // بدل Auth
-
-        $applications = $candidate->applications()
-            ->with('job')
-            ->latest()
-            ->get();
-
-        return view('candidate.applications', compact('applications'));
+        $jobs = JobPost::latest()->paginate(5);
+        return view('candidate.job-posts', compact('jobs'));
     }
 
-
-    // Show apply form
     public function showApplyForm(JobPost $job)
     {
-        $candidate = Candidate::first(); // بدل Auth
-        return view('candidate.apply', compact('job', 'candidate'));
+        $user = Auth::user();
+        return view('candidate.apply', compact('job', 'user'));
     }
 
-    // Submit application
     public function submitApplication(Request $request, JobPost $job)
     {
-        $candidate = Candidate::first(); // بدل Auth
+        $user = Auth::user();
 
         $request->validate([
             'resume' => 'nullable|mimes:pdf|max:2048',
         ]);
 
-        $resumePath = $candidate->resume; // default resume
+        $resume = $user->resume;
         if ($request->hasFile('resume')) {
-            $resumePath = $request->file('resume')->store('resumes', 'public');
+            $resume = $request->file('resume')->store('resumes', 'public');
         }
 
         Application::create([
-            'candidate_id' => $candidate->id,
+            'user_id' => $user->id,
             'job_id' => $job->id,
-            'resume' => $resumePath,
+            'resume' => $resume,
             'status' => 'pending',
         ]);
 
-        return redirect()->route('candidate.applications')->with('success', 'Application submitted successfully.');
+        return redirect()->route('candidate.applications')->with('success', 'Application submitted.');
+    }
+
+    // Applications CRUD
+    public function applications()
+    {
+        $user = Auth::user();
+        $applications = Application::where('user_id', $user->id)->with('job')->latest()->get();
+        return view('candidate.applications', compact('applications'));
+    }
+
+    public function editApplication(Application $application)
+    {
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $user = Auth::user();
+        return view('candidate.edit-application', compact('application', 'user'));
+    }
+
+    public function updateApplication(Request $request, Application $application)
+    {
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'resume' => 'nullable|mimes:pdf|max:2048',
+            'status' => 'required|in:pending,accepted,rejected',
+        ]);
+
+        if ($request->hasFile('resume')) {
+            $application->resume = $request->file('resume')->store('resumes', 'public');
+        }
+
+        $application->status = $request->status;
+        $application->save();
+
+        return back()->with('success', 'Application updated.');
+    }
+
+    public function deleteApplication(Application $application)
+    {
+        if ($application->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $application->delete();
+        return back()->with('success', 'Application deleted.');
     }
 }

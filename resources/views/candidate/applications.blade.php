@@ -1,6 +1,10 @@
 <x-app-layout>
     <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-4">Your Job Applications</h1>
+        <h1 class="text-2xl font-bold mb-4">Your Applications</h1>
+
+        @if(session('success'))
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">{{ session('success') }}</div>
+        @endif
 
         @if($applications->count() > 0)
         <ul class="space-y-2">
@@ -10,7 +14,15 @@
                     <strong>{{ $application->job->title }}</strong>
                     <p class="text-gray-500 text-sm">{{ $application->job->location ?? '' }}</p>
                 </div>
-                <span class="text-sm text-gray-500">Status: {{ $application->status }}</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">Status: {{ $application->status }}</span>
+                    <a href="{{ route('candidate.applications.edit', $application) }}" class="text-blue-600 text-sm">Edit</a>
+                    <form action="{{ route('candidate.applications.delete', $application) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 text-sm">Delete</button>
+                    </form>
+                </div>
             </li>
             @endforeach
         </ul>

@@ -13,4 +13,10 @@ class Category extends Model
         'name',
         'slug',
     ];
+
+    public function JobPosts()
+    {
+        return $this->hasMany(JobPost::class);
+    }
+
 }

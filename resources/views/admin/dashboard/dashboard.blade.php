@@ -16,8 +16,8 @@
       <a href="{{ route('admin.jobs.pending') }}" class="mt-2 inline-block text-sm text-blue-700 dark:text-blue-300 hover:underline">Review</a>
     </div>
     <div class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4">
-      <div class="text-sm text-slate-500 dark:text-slate-400">Approved Jobs</div>
-      <div class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ $stats['approved_jobs'] ?? 0 }}</div>
+      <div class="text-sm text-slate-500 dark:text-slate-400">accepted Jobs</div>
+      <div class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ $stats['accepted_jobs'] ?? 0 }}</div>
       <a href="{{ route('admin.jobs.index') }}" class="mt-2 inline-block text-sm text-blue-700 dark:text-blue-300 hover:underline">View</a>
     </div>
     <div class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4">
@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  
+
   <div class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4">
     <div class="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Quick Links</div>
     <div class="flex flex-wrap gap-2">

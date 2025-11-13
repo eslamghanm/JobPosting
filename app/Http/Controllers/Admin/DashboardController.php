@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $stats = [
             'pending_jobs' => JobPost::where('status', 'pending')->count(),
-            'approved_jobs' => JobPost::where('status', 'approved')->count(),
+            'accepted_jobs' => JobPost::where('status', 'accepted')->count(),
             'categories' => Category::count(),
         ];
 

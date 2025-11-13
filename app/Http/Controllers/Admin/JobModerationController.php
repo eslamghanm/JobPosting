@@ -36,11 +36,11 @@ class JobModerationController extends Controller
     public function approve(JobPost $job)
     {
         $job->update([
-            'status' => 'approved',
+            'status' => 'accepted',
             'posted_at' => now(),
         ]);
 
-        return back()->with('status', 'Job approved successfully.');
+        return back()->with('status', 'Job accepted successfully.');
     }
 
     public function reject(Request $request, JobPost $job)

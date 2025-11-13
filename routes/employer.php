@@ -17,7 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])->name('employer.dashboard');
     Route::get('/employer/analysis', [AnalysisController::class, 'index'])->name('employer.analysis');
-    Route::get('/employer/applications', [ApplicationsController::class, 'index'])->name('employer.applications');
+    Route::resource('employer/applications', ApplicationsController::class)
+    ->names('Applications');
   });
 
 

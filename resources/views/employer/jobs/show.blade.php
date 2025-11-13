@@ -126,13 +126,13 @@
                                 <div class="mt-4">
                                     @php $s = $post->status ?? 'draft'; @endphp
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{
-                                        $s === 'approved' ? 'bg-green-100 text-green-800' :
+                                        $s === 'accepted' ? 'bg-green-100 text-green-800' :
                                         ($s === 'rejected' ? 'bg-red-100 text-red-800' :
                                         ($s === 'closed' ? 'bg-gray-100 text-gray-800' :
                                         'bg-yellow-100 text-yellow-800'))
                                     }}">
                                         <span class="w-2 h-2 mr-2 rounded-full {{
-                                            $s === 'approved' ? 'bg-green-500' :
+                                            $s === 'accepted' ? 'bg-green-500' :
                                             ($s === 'rejected' ? 'bg-red-500' :
                                             ($s === 'closed' ? 'bg-gray-500' :
                                             'bg-yellow-500'))

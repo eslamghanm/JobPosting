@@ -37,17 +37,20 @@
 
 <div class="grid grid-cols-1 gap-4">
     <div>
-        <x-input-label for="category" :value="__('Category')" class="dark:text-gray-200" />
-        <x-text-input
-            id="category"
-            name="category"
-            type="text"
-            class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
-            :value="old('category')"
-            placeholder="e.g. Engineering, Design, Marketing"
-        />
-        <x-input-error class="mt-2" :messages="$errors->get('category')" />
-    </div>
+    <x-input-label for="category" :value="__('Category')" class="dark:text-gray-200" />
+
+    <select id="category" name="category" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm px-4 py-2">
+        <option value="" disabled {{ old('category') ? '' : 'selected' }}>Select a category</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+
+    <x-input-error class="mt-2" :messages="$errors->get('category')" />
+</div>
+
 
     <div>
         <x-input-label for="responsibilities" :value="__('Responsibilities')" class="dark:text-gray-200" />

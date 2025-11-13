@@ -38,11 +38,18 @@ class JobPost extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
-    // public function applications()
-    // {
-    //     return $this->hasMany(JobApplication::class);
-    // }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class, 'job_id');
+    }
+
+
 
     public function comments()
     {

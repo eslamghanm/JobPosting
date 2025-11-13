@@ -22,7 +22,7 @@
               @php
                 $status = $job->status ?? 'pending';
                 $badge = [
-                  'approved' => 'bg-green-100 text-green-800 border-green-200',
+                  'accepted' => 'bg-green-100 text-green-800 border-green-200',
                   'rejected' => 'bg-red-100 text-red-800 border-red-200',
                   'pending'  => 'bg-amber-100 text-amber-800 border-amber-200',
                 ][$status] ?? 'bg-slate-100 text-slate-800 border-slate-200';
@@ -31,7 +31,7 @@
             </td>
             <td class="px-3 py-2">
               <div class="flex justify-end gap-2">
-                @if(($job->status ?? 'pending') !== 'approved')
+                @if(($job->status ?? 'pending') !== 'accepted')
                   <form method="POST" action="{{ route('admin.jobs.approve',$job) }}" class="inline">
                     @csrf
                     <button class="inline-flex items-center gap-1 px-2 py-1 rounded border border-green-300 text-green-700 hover:bg-green-50 transition-base text-sm">Approve</button>

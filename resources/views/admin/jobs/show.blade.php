@@ -11,7 +11,7 @@
       <div class="text-sm text-slate-500">{{ $job->company->name ?? '—' }} • {{ ucfirst($job->work_type ?? 'on-site') }}</div>
     </div>
     <div class="flex gap-2">
-      @if(($job->status ?? 'pending') !== 'approved')
+      @if(($job->status ?? 'pending') !== 'accepted')
         <form method="POST" action="{{ route('admin.jobs.approve',$job) }}">
           @csrf
           <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-green-300 text-green-700 hover:bg-green-50 transition-base text-sm">Approve</button>

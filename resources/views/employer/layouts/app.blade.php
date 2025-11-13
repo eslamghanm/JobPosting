@@ -114,7 +114,7 @@
                     </svg>
                 </button>
             </div>
-            <nav x-data="{ activeLink: '{{ request()->routeIs('employer.dashboard') ? 'dashboard' : (request()->routeIs('employer.jobs.*') ? 'create-job' : (request()->routeIs('employer.applications') ? 'applications' : (request()->routeIs('employer.analysis') ? 'analysis' : ''))) }}' }" class="flex-1 p-4 space-y-1">
+            <nav x-data="{ activeLink: '{{ request()->routeIs('employer.dashboard') ? 'dashboard' : (request()->routeIs('employer.jobs.*') ? 'create-job' : (request()->routeIs('Applications.index') ? 'applications' : (request()->routeIs('employer.analysis') ? 'analysis' : ''))) }}' }" class="flex-1 p-4 space-y-1">
 
                 <!-- Dashboard -->
                 <a href="{{ route('employer.dashboard') }}" @click="activeLink = 'dashboard'"
@@ -146,7 +146,7 @@
 
 
                 <!-- Applications -->
-                <a href="{{ route('employer.applications') }}" @click="activeLink = 'applications'"
+                <a href="{{ route('Applications.index') }}" @click="activeLink = 'applications'"
                     :class="activeLink === 'applications' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
                         'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-blue-700 dark:hover:text-blue-300'"
                     class="transition-base group flex items-center gap-3 px-3 py-2 rounded-md">

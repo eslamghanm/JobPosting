@@ -11,7 +11,7 @@ class JobPostFactory extends Factory
     public function definition(): array
     {
 
-        $statuses = ['draft', 'published', 'closed', 'approved', 'rejected'];
+        $statuses = ['draft', 'published', 'closed', 'accepted', 'rejected'];
 
         return [
             'title' => $this->faker->jobTitle(),

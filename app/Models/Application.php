@@ -24,11 +24,11 @@ class Application extends Model
     // بدل candidate نستخدم user
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id'); 
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function job()
-    {
-        return $this->belongsTo(JobPost::class);
-    }
+{
+    return $this->belongsTo(JobPost::class, 'job_id');
+}
 }

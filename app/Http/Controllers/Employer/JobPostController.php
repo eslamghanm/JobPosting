@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
+use App\Models\Category;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,9 @@ class JobPostController extends Controller
      */
     public function create()
     {
-        return view('employer.jobs.create');
+        $categories = Category::all();
+        return view('employer.jobs.create', compact('categories'));
+
     }
 
     //image functionality to be added later

@@ -19,7 +19,7 @@
             @php
                 $collection = $jobPosts ?? $posts ?? collect();
                 $statusCounts = $collection->groupBy('status')->map->count();
-                $publishedCount = ($statusCounts['approved'] ?? 0) + ($statusCounts['published'] ?? 0);
+                $publishedCount = ($statusCounts['accepted'] ?? 0) + ($statusCounts['published'] ?? 0);
                 $draftCount = $statusCounts['draft'] ?? 0;
                 $closedCount = $statusCounts['closed'] ?? 0;
                 $draftCount = $statusCounts['draft'] ?? 0;

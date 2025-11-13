@@ -19,12 +19,13 @@ class Application extends Model
         'job_id',
         'resume',
         'status',
+        'phone',
     ];
 
     // بدل candidate نستخدم user
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id'); 
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function job()

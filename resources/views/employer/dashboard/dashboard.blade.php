@@ -138,7 +138,7 @@
         {{-- Pagination --}}
         @if($latestJobs->hasPages())
             <div class="px-6 py-4">
-                {{ $latestJobs->links() }}
+                {{ $latestJobs->onEachSide(1)->links('pagination::simple-tailwind') }}
             </div>
         @endif
     </div>

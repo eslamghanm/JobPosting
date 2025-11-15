@@ -26,7 +26,10 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-gray-700">
                 <div class="bg-gray-50 p-4 rounded-xl border">
                     <p class="font-semibold text-gray-900">💰 Salary</p>
-                    <p>{{ $application->job->salary_range ?? 'Not specified' }}</p>
+                    <p>
+                        {{ $application->job->salary_min ? '$' . number_format($application->job->salary_min) : 'N/A' }} -
+                        {{ $application->job->salary_max ? '$' . number_format($application->job->salary_max) : 'N/A' }}
+                    </p>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-xl border">
                     <p class="font-semibold text-gray-900">🏠 Work Type</p>

@@ -52,7 +52,7 @@
     <!-- Quick Filters -->
     <div class="bg-white overflow-hidden shadow-sm rounded-lg">
         
-        <form method="GET" action="{{ route('jobs.index') }}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <form action="{{ route('jobs.index') }}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Quick Filters') }}</h3>
 
     {{-- Keywords --}}
@@ -114,7 +114,7 @@
     <div class="flex flex-col md:col-span-2 lg:col-span-3 items-start md:items-end gap-2 mt-2">
         <div class="flex gap-3">
             {{-- Reset --}}
-            <button type="reset"
+            <button  type="reset"
                     class="px-5 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition">
                 Reset
             </button>

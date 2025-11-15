@@ -33,12 +33,15 @@ class JobPost extends Model
     ];
 
     protected $casts = [
-        'skills' => 'array',
-        'qualifications' => 'array',
-        'technologies' => 'array',
-        'benefits' => 'array',
-        'application_deadline' => 'date',
-    ];
+    'skills' => 'array',
+    'qualifications' => 'array',
+    'technologies' => 'array',
+    'benefits' => 'array',
+    'salary_min' => 'decimal:2',
+    'salary_max' => 'decimal:2',
+    'application_deadline' => 'date',
+];
+
 
     // Relations
     public function user()

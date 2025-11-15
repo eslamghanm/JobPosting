@@ -24,10 +24,11 @@ class UpdateJobPostRequest extends FormRequest
         return [
             'title' => 'required|string|min:5|max:255',
             'description' => 'required|string',
-            'location' => 'nullable|string|max:255',
             'responsibilities' => 'nullable|string',
-
-            // Skills, Qualifications, Technologies, Benefits as arrays
+            'category_id' => 'nullable|exists:categories,id',
+            'location' => 'nullable|string|max:255',
+            'work_type' => 'nullable|in:remote,on-site,hybrid',
+            'application_deadline' => 'nullable|date',
             'skills' => 'nullable|array',
             'skills.*' => 'string|max:100',
             'qualifications' => 'nullable|array',
@@ -36,16 +37,9 @@ class UpdateJobPostRequest extends FormRequest
             'technologies.*' => 'string|max:100',
             'benefits' => 'nullable|array',
             'benefits.*' => 'string|max:100',
-
             'salary_min' => 'nullable|numeric|min:0',
-            'salary_max' => 'nullable|numeric|min:0',
-
-            // Updated column
-            'category_id' => 'nullable|exists:categories,id',
-
-            'work_type' => 'nullable|in:remote,on-site,hybrid',
+            'salary_max' => 'nullable|numeric|min:0|gte:salary_min',
             'branding_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'application_deadline' => 'nullable|date',
             'status' => 'nullable|in:draft,published,closed',
         ];
     }

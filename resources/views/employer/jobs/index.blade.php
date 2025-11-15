@@ -5,12 +5,7 @@
                 <h2 class="font-semibold text-2xl text-gray-800 leading-tight">{{ __('Job Posts') }}</h2>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Manage and track your job listings') }}</p>
             </div>
-            <a href="{{ route('jobs.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                {{ __('Post a Job') }}
-            </a>
+           
         </div>
     </x-slot>
 
@@ -119,7 +114,7 @@
                                 <!-- Header: Title + Status -->
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1 flex items-center gap-4">
-                                        <div class="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border">
+                                        <div class="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border">
                                             @if(!empty($post->branding_image))
                                                 <img src="{{ asset('storage/' . $post->branding_image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
                                             @else
@@ -138,7 +133,7 @@
                                             </h3>
                                             @if(!empty($post->category))
                                                 <div class="mt-1">
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">{{ $post->category }}</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">{{ $post->category->name }}</span>
                                                 </div>
                                             @endif
                                             <div class="mt-1 flex items-center gap-2 text-sm text-gray-500">
@@ -183,7 +178,7 @@
 
                                 <!-- Body: Description + Meta -->
                                 <div class="mt-4">
-                                    <p class="text-sm text-gray-600">{{ \Illuminate\Support\Str::limit($post->description ?? '', 200) }}</p>
+                                    <p class="text-sm text-gray-600">Description : {{ \Illuminate\Support\Str::limit($post->description ?? '', 200) }}</p>
                                     @if(!empty($post->responsibilities))
                                         @php
                                             $firstResp = trim(explode("\n", strip_tags($post->responsibilities))[0] ?? '');
@@ -192,11 +187,11 @@
                                             <p class="mt-2 text-sm text-gray-500"><strong>{{ __('Responsibility:') }}</strong> {{ \Illuminate\Support\Str::limit($firstResp, 100) }}</p>
                                         @endif
                                     @endif
-                                    @if($post->skills)
+                                    @if($post->technologies)
                                     <div class="mt-4 flex flex-wrap gap-2">
-                                        @foreach((array)$post->skills as $skill)
+                                        @foreach((array)$post->technologies as $technology)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $skill }}
+                                            {{ $technology }}
                                         </span>
                                         @endforeach
                                     </div>
@@ -241,12 +236,13 @@
                                 <!-- Footer: Meta + Actions -->
                                 <div class="mt-6 flex items-center justify-between border-t pt-4">
                                     <div class="flex items-center space-x-4 text-sm">
-                                        @if($post->salary_range)
+                                        @if($post->salary_min || $post->salary_max)
                                         <span class="inline-flex items-center text-gray-500">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
-                                            {{ $post->salary_range }}
+                                        {{ $post->salary_min ? '$' . number_format($post->salary_min) : 'N/A' }} -
+                                        {{ $post->salary_max ? '$' . number_format($post->salary_max) : 'N/A' }}
                                         </span>
                                         @endif
                                         @if($post->application_deadline)

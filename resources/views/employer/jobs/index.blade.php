@@ -5,7 +5,7 @@
                 <h2 class="font-semibold text-2xl text-gray-800 leading-tight">{{ __('Job Posts') }}</h2>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Manage and track your job listings') }}</p>
             </div>
-           
+
         </div>
     </x-slot>
 
@@ -51,7 +51,7 @@
 
     <!-- Quick Filters -->
     <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-        
+
         <form action="{{ route('jobs.index') }}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Quick Filters') }}</h3>
 

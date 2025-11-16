@@ -12,7 +12,7 @@ Route::get('/employer', function () {
 });
 // Route::middleware(['auth', 'role:employer'])->group(function () {
 Route::middleware('auth', 'role:employer')->group(function () {
-    Route::resource('jobs', JobPostController::class);
+    // Route::resource('jobs', JobPostController::class);
     Route::post('/jobs/{job}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])->name('employer.dashboard');

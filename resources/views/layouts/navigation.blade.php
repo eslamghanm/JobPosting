@@ -17,7 +17,7 @@
                 <!-- Desktop Menu -->
                 <div class="hidden sm:flex items-center space-x-6">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Home</x-nav-link>
-                    <x-nav-link :href="route('jobs.index')" :active="request()->routeIs('jobs.*')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Jobs</x-nav-link>
+                    <x-nav-link :href="route('jobs')" :active="request()->routeIs('jobs')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Jobs</x-nav-link>
                     <x-nav-link :href="route('about')" :active="request()->routeIs('about')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">About</x-nav-link>
                     <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</x-nav-link>
                 </div>
@@ -106,7 +106,7 @@
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-white dark:bg-slate-900">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Home</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('jobs.index')" :active="request()->routeIs('jobs.*')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Jobs</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('jobs')" :active="request()->routeIs('jobs.*')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Jobs</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">About</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</x-responsive-nav-link>
         </div>

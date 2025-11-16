@@ -17,6 +17,9 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
+Route::get('/jobs', [HomeController::class, 'jobs'])->name('jobs');
+
+Route::get('/jobs/{job}', [HomeController::class, 'show'])->name('jobs.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

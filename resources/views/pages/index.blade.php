@@ -93,7 +93,7 @@
                             </p>
 
                             <!-- Action Button (link style) -->
-                            <a href="{{ route('jobs.index', ['category' => $category->id]) }}"
+                            <a href="{{ route('jobs', ['category' => $category->id]) }}"
                                 class="mt-auto inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:underline transition">
                                 View Jobs →
                             </a>
@@ -102,7 +102,7 @@
                 </div>
                 <!-- See More Button -->
             <div class="mt-12 text-center">
-                <a href="{{ route('jobs.index') }}"
+                <a href="{{ route('jobs') }}"
                    class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 transition font-medium">
                     See More Categories
                 </a>
@@ -178,7 +178,7 @@
             </div>
             <!-- See More Button -->
             <div class="mt-12 text-center">
-                <a href="{{ route('jobs.index') }}"
+                <a href="{{ route('jobs') }}"
                    class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 transition font-medium">
                     See More Jobs
                 </a>

@@ -131,8 +131,8 @@
                 </a>
 
                 <!-- Create Job -->
-               <a href="{{ route('jobs.create') }}"
-                class="transition-base group flex items-center gap-3 px-3 py-2 rounded-md
+                <a href="{{ route('jobs.create') }}"
+                    class="transition-base group flex items-center gap-3 px-3 py-2 rounded-md
                         {{ request()->routeIs('jobs.create')
                             ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                             : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-blue-700 dark:hover:text-blue-300' }}">
@@ -196,16 +196,17 @@
                 @if (auth()->check())
                     <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Your name : <span
                             class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->name ?: 'none' }}</span>
-                   </div>
+                    </div>
                     <div class="text-xs text-slate-500 my-2 dark:text-slate-400 mb-1">Your email : <span
                             class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->email ?: 'none' }}</span>
-                   </div>
+                    </div>
                     <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Your role : <span
                             class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->role ?: 'none' }}</span>
-                   </div>
+                    </div>
 
-                    <div class="py-3 flex items-center justify-center gap-3" x-data="{ profileOpen: false, darkMode: localStorage.theme === 'dark' }" x-init="if (darkMode) document.documentElement.classList.add('dark');
-                    else document.documentElement.classList.remove('dark');">
+                    <div class="py-3 flex items-center justify-center gap-3" x-data="{ profileOpen: false, darkMode: localStorage.theme === 'dark' }"
+                        x-init="if (darkMode) document.documentElement.classList.add('dark');
+                        else document.documentElement.classList.remove('dark');">
 
                         <!-- 🌗 Theme Toggle -->
                         <button
@@ -294,52 +295,52 @@
                    bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/10 z-50">
                             <div class="py-2">
 
-    {{-- Home (visible only for logged users) --}}
-    @auth
-        <a href="{{ route('jobs.index') }}"
-            class="flex items-center gap-2 px-4 py-2 text-sm
+                                {{-- Home (visible only for logged users) --}}
+                                @auth
+                                    <a href="{{ route('jobs.index') }}"
+                                        class="flex items-center gap-2 px-4 py-2 text-sm
                    text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-            🏠 <span>Home</span>
-        </a>
+                                        🏠 <span>Home</span>
+                                    </a>
 
-        {{-- Dashboard based on user role --}}
-        @php
-            $dashboardRoute = match (auth()->user()->role) {
-                'candidate' => 'candidate.dashboard',
-                'employer'  => 'employer.dashboard',
-                'admin'     => 'admin.dashboard',
-                default     => null,
-            };
-        @endphp
+                                    {{-- Dashboard based on user role --}}
+                                    @php
+                                        $dashboardRoute = match (auth()->user()->role) {
+                                            'candidate' => 'candidate.dashboard',
+                                            'employer' => 'employer.dashboard',
+                                            'admin' => 'admin.dashboard',
+                                            default => null,
+                                        };
+                                    @endphp
 
-        @if($dashboardRoute)
-            <a href="{{ route($dashboardRoute) }}"
-                class="flex items-center gap-2 px-4 py-2 text-sm
+                                    @if ($dashboardRoute)
+                                        <a href="{{ route($dashboardRoute) }}"
+                                            class="flex items-center gap-2 px-4 py-2 text-sm
                        text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                📊 <span>Dashboard</span>
-            </a>
-        @endif
-    @endauth
+                                            📊 <span>Dashboard</span>
+                                        </a>
+                                    @endif
+                                @endauth
 
 
-    {{-- Profile --}}
-    <a href="{{ route('profile.edit') }}"
-        class="flex items-center gap-2 px-4 py-2 text-sm
+                                {{-- Profile --}}
+                                <a href="{{ route('profile.edit') }}"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm
                text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-        👤 <span>Profile</span>
-    </a>
+                                    👤 <span>Profile</span>
+                                </a>
 
-    {{-- Logout --}}
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit"
-            class="flex w-full items-center gap-2 px-4 py-2 text-sm
+                                {{-- Logout --}}
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="flex w-full items-center gap-2 px-4 py-2 text-sm
                    text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-            🚪 <span>Logout</span>
-        </button>
-    </form>
+                                        🚪 <span>Logout</span>
+                                    </button>
+                                </form>
 
-</div>
+                            </div>
 
                         </div>
                     </div>

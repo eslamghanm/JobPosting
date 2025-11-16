@@ -57,6 +57,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             JobPostSeeder::class,
+            ApplicationSeeder::class,
         ]);
     }
 }

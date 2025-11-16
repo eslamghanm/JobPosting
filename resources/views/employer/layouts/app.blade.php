@@ -200,26 +200,19 @@
 
             <div class="sidebar-footer px-4 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40">
                 @if (auth()->check())
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="h-9 w-9 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 text-sm font-semibold">
-                            {{ strtoupper(mb_substr(auth()->user()->name ?: 'E', 0, 1)) }}
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500">Signed in as</p>
-                            <p class="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">
-                                {{ auth()->user()->name ?: 'Employer' }}
-                            </p>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                                {{ auth()->user()->email ?: 'No email set' }}
-                            </p>
-                        </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Your name : <span
+                            class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->name ?: 'none' }}</span>
+                    </div>
+                    <div class="text-xs text-slate-500 my-2 dark:text-slate-400 mb-1">Your email : <span
+                            class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->email ?: 'none' }}</span>
+                    </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Your role : <span
+                            class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{{ auth()->user()->role ?: 'none' }}</span>
                     </div>
 
-                    <div class="flex items-center justify-between gap-2">
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded-full border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
-                            Role: {{ auth()->user()->role ?: 'none' }}
-                        </span>
+                    <div class="py-3 flex items-center justify-center gap-3" x-data="{ profileOpen: false, darkMode: localStorage.theme === 'dark' }"
+                        x-init="if (darkMode) document.documentElement.classList.add('dark');
+                        else document.documentElement.classList.remove('dark');">
 
                         <div class="flex items-center" x-data="{ darkMode: localStorage.theme === 'dark' }"
                             x-init="if (darkMode) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');">
@@ -312,52 +305,52 @@
                    bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/10 z-50">
                             <div class="py-2">
 
-    {{-- Home (visible only for logged users) --}}
-    @auth
-        <a href="{{ route('jobs.index') }}"
-            class="flex items-center gap-2 px-4 py-2 text-sm
+                                {{-- Home (visible only for logged users) --}}
+                                @auth
+                                    <a href="{{ route('jobs.index') }}"
+                                        class="flex items-center gap-2 px-4 py-2 text-sm
                    text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-            🏠 <span>Home</span>
-        </a>
+                                        🏠 <span>Home</span>
+                                    </a>
 
-        {{-- Dashboard based on user role --}}
-        @php
-            $dashboardRoute = match (auth()->user()->role) {
-                'candidate' => 'candidate.dashboard',
-                'employer'  => 'employer.dashboard',
-                'admin'     => 'admin.dashboard',
-                default     => null,
-            };
-        @endphp
+                                    {{-- Dashboard based on user role --}}
+                                    @php
+                                        $dashboardRoute = match (auth()->user()->role) {
+                                            'candidate' => 'candidate.dashboard',
+                                            'employer' => 'employer.dashboard',
+                                            'admin' => 'admin.dashboard',
+                                            default => null,
+                                        };
+                                    @endphp
 
-        @if($dashboardRoute)
-            <a href="{{ route($dashboardRoute) }}"
-                class="flex items-center gap-2 px-4 py-2 text-sm
+                                    @if ($dashboardRoute)
+                                        <a href="{{ route($dashboardRoute) }}"
+                                            class="flex items-center gap-2 px-4 py-2 text-sm
                        text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                📊 <span>Dashboard</span>
-            </a>
-        @endif
-    @endauth
+                                            📊 <span>Dashboard</span>
+                                        </a>
+                                    @endif
+                                @endauth
 
 
-    {{-- Profile --}}
-    <a href="{{ route('profile.edit') }}"
-        class="flex items-center gap-2 px-4 py-2 text-sm
+                                {{-- Profile --}}
+                                <a href="{{ route('profile.edit') }}"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm
                text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-        👤 <span>Profile</span>
-    </a>
+                                    👤 <span>Profile</span>
+                                </a>
 
-    {{-- Logout --}}
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit"
-            class="flex w-full items-center gap-2 px-4 py-2 text-sm
+                                {{-- Logout --}}
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="flex w-full items-center gap-2 px-4 py-2 text-sm
                    text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-            🚪 <span>Logout</span>
-        </button>
-    </form>
+                                        🚪 <span>Logout</span>
+                                    </button>
+                                </form>
 
-</div>
+                            </div>
 
                         </div>
                     </div>

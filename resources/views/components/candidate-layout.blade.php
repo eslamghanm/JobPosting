@@ -92,7 +92,7 @@
             class="sidebar fixed top-0 bottom-0 inset-y-0 left-0 z-40 w-64 -translate-x-full md:translate-x-0 md:static md:flex bg-white dark:bg-gray-900/50 border-r border-gray-200 dark:border-gray-800 flex-col transition-transform duration-150 ease-in-out max-h-[100vh]">
 
             <div class="h-16 px-4 md:px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
-                <a href="{{ route('candidate.dashboard') }}" class="flex items-center gap-2 min-w-0">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 min-w-0">
                     <img src="{{ asset('assets/logo.jpg') }}" alt="Logo" class="h-8 w-auto rounded">
                     <span class="logo-text text-lg font-bold text-gray-800 dark:text-gray-100 truncate">Candidate</span>
                 </a>

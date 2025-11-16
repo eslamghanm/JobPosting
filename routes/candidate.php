@@ -5,6 +5,7 @@ use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\Employer\JobPostController;
 use App\Http\Controllers\Candidate\JobController as CandidateJobController;
 
+
 Route::middleware('auth', 'role:candidate')->group(function () {
     Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])->name('candidate.dashboard');
     Route::get('/candidate/profile', [CandidateController::class, 'editProfile'])->name('candidate.profile');
@@ -14,7 +15,7 @@ Route::middleware('auth', 'role:candidate')->group(function () {
     Route::get('/candidate/jobs', [CandidateController::class, 'jobPosts'])
         ->name('candidate.jobs');
 
-    
+
 
     Route::get('/candidate/job/{job}', [CandidateController::class, 'showJob'])
         ->name('candidate.show-job');
@@ -30,6 +31,6 @@ Route::middleware('auth', 'role:candidate')->group(function () {
 
     Route::get('/candidate/jobs/{job}/linkedin-apply', [CandidateController::class, 'applyViaLinkedIn'])
         ->name('candidate.linkedin.apply');
-    Route::get('/auth/linkedin', [LinkedInController::class, 'redirect'])->name('linkedin.redirect');
-    Route::get('/auth/linkedin/callback', [LinkedInController::class, 'callback'])->name('linkedin.callback');
+    // Route::get('/auth/linkedin', [LinkedInController::class, 'redirect'])->name('linkedin.redirect');
+    // Route::get('/auth/linkedin/callback', [LinkedInController::class, 'callback'])->name('linkedin.callback');
 });

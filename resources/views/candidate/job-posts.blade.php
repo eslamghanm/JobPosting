@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-100 leading-tight">{{ __('Job Posts') }}</h2>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ __('Manage and track your job listings') }}</p>
+                <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-100 leading-tight">{{ __('My Job Applications') }}</h2>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ __('Manage and track your job applications') }}</p>
             </div>
         </div>
     </x-slot>
@@ -11,13 +11,12 @@
     <main class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @php
-            $collection = $jobPosts ?? $posts ?? collect();
+            $collection = $applications ?? $posts ?? collect();
             $statusCounts = $collection->groupBy('status')->map->count();
-            $publishedCount = ($statusCounts['accepted'] ?? 0) + ($statusCounts['published'] ?? 0);
-            $draftCount = $statusCounts['draft'] ?? 0;
-            $closedCount = $statusCounts['closed'] ?? 0;
-            $draftCount = $statusCounts['draft'] ?? 0;
+            $pendingCount = $statusCounts['pending'] ?? 0;
+            $acceptedCount = $statusCounts['accepted'] ?? 0;
             $rejectedCount = $statusCounts['rejected'] ?? 0;
+            $totalCount = $collection->count();
             @endphp
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -26,23 +25,23 @@
                     <!-- Stats Card -->
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
                         <div class="p-6">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Overview') }}</h3>
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Applications Overview') }}</h3>
                             <dl class="mt-5 grid grid-cols-1 gap-5">
                                 <div class="flex items-center justify-between">
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Posts') }}</dt>
-                                    <dd class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $collection->count() }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Applications') }}</dt>
+                                    <dd class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $totalCount }}</dd>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Published') }}</dt>
-                                    <dd class="text-lg font-semibold text-green-600 dark:text-green-400">{{ $publishedCount }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Pending') }}</dt>
+                                    <dd class="text-lg font-semibold text-yellow-600 dark:text-yellow-400">{{ $pendingCount }}</dd>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Draft') }}</dt>
-                                    <dd class="text-lg font-semibold text-yellow-600 dark:text-yellow-400">{{ $draftCount }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Accepted') }}</dt>
+                                    <dd class="text-lg font-semibold text-green-600 dark:text-green-400">{{ $acceptedCount }}</dd>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Closed') }}</dt>
-                                    <dd class="text-lg font-semibold text-gray-600 dark:text-gray-400">{{ $closedCount }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Rejected') }}</dt>
+                                    <dd class="text-lg font-semibold text-red-600 dark:text-red-400">{{ $rejectedCount }}</dd>
                                 </div>
                             </dl>
                         </div>
@@ -127,7 +126,7 @@
                     </div>
                 </aside>
 
-                <!-- Right: Job Posts List -->
+                <!-- Right: Job Applications List -->
                 <section class="lg:col-span-3 space-y-6">
                     @if($collection->isEmpty())
                     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-8">
@@ -135,24 +134,27 @@
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                             </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ __('No job posts') }}</h3>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Wait for new job postings.') }}</p>
-                            <!-- <div class="mt-6">
-                                <a href="{{ route('jobs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ __('No job applications') }}</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('You haven\'t applied to any jobs yet.') }}</p>
+                            <div class="mt-6">
+                                <a href="{{ route('candidate.jobs') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
-                                    {{ __('Create Job Post') }}
+                                    {{ __('Browse Jobs') }}
                                 </a>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     @else
                     <div class="space-y-4">
-                        @foreach($collection as $post)
+                        @foreach($collection as $application)
+                        @php
+                        $post = $application->job;
+                        @endphp
                         <article class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                             <div class="p-6">
-                                <!-- Header: Title + Status -->
+                                <!-- Header: Title + Application Status -->
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1 flex items-center gap-4">
                                         <div class="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
@@ -195,23 +197,23 @@
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    {{ optional($post->created_at)->diffForHumans() ?? '-' }}
+                                                    Applied: {{ optional($application->created_at)->diffForHumans() ?? '-' }}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
-                                    @php $s = $post->status ?? 'draft'; @endphp
+                                    @php $s = $application->status ?? 'pending'; @endphp
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{
-                                        $s === 'published' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-                                        ($s === 'draft' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
-                                        ($s === 'closed' ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200' :
-                                        'bg-yellow-500 dark:bg-yellow-600 text-yellow-800 dark:text-yellow-200'))
+                                        $s === 'accepted' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
+                                        ($s === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
+                                        ($s === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' :
+                                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'))
                                     }}">
                                         <span class="w-2 h-2 mr-2 rounded-full {{
-                                            $s === 'published' ? 'bg-green-500 dark:bg-green-400' :
-                                            ($s === 'draft' ? 'bg-yellow-500 dark:bg-yellow-400' :
-                                            ($s === 'closed' ? 'bg-gray-500 dark:bg-gray-400' :
-                                            'bg-yellow-500 dark:bg-yellow-400'))
+                                            $s === 'accepted' ? 'bg-green-500 dark:bg-green-400' :
+                                            ($s === 'pending' ? 'bg-yellow-500 dark:bg-yellow-400' :
+                                            ($s === 'rejected' ? 'bg-red-500 dark:bg-red-400' :
+                                            'bg-gray-500 dark:bg-gray-400'))
                                         }}"></span>
                                         {{ ucfirst($s) }}
                                     </span>
@@ -300,7 +302,13 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
-                                            {{ __('View') }}
+                                            {{ __('View Job') }}
+                                        </a>
+                                        <a href="{{ route('candidate.applications.edit', $application) }}" class="inline-flex items-center px-3 py-1.5 border border-indigo-300 dark:border-indigo-600 shadow-sm text-sm font-medium rounded text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900 hover:bg-indigo-100 dark:hover:bg-indigo-800">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            {{ __('Edit Application') }}
                                         </a>
                                     </div>
                                 </div>

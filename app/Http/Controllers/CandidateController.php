@@ -74,66 +74,67 @@ class CandidateController extends Controller
     // ------------------------------
     // Job Posts + Filters
     // ------------------------------
+    // CandidateController.php
+
     public function jobPosts(Request $request)
     {
-        $query = JobPost::query();
+        $user = Auth::user();
 
-        // Keywords
-        if ($request->filled('keywords')) {
-            $query->where('title', 'like', '%' . $request->keywords . '%')
-                ->orWhere('description', 'like', '%' . $request->keywords . '%');
-        }
+        // بدل ما نبدأ من JobPost، نبدأ من الـ Applications الخاصة بالمستخدم
+        $query = Application::where('user_id', $user->id)
+            ->with(['job' => function ($query) use ($request) {
+                // نطبق الفلاتر على العلاقة job
+                if ($request->filled('keywords')) {
+                    $query->where('title', 'like', '%' . $request->keywords . '%')
+                        ->orWhere('description', 'like', '%' . $request->keywords . '%');
+                }
 
-        // Location
-        if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
+                if ($request->filled('location')) {
+                    $query->where('location', 'like', '%' . $request->location . '%');
+                }
 
-        // Category
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
+                if ($request->filled('category')) {
+                    $query->where('category_id', $request->category);
+                }
 
-        // Salary Range
-        if ($request->filled('salary')) {
-            $salary = $request->salary;
+                if ($request->filled('salary')) {
+                    $salary = $request->salary;
+                    $query->where(function ($q) use ($salary) {
+                        $q->where('salary_min', '<=', $salary)
+                            ->where('salary_max', '>=', $salary);
+                    });
+                }
 
-            $query->where(function ($q) use ($salary) {
-                $q->where('salary_min', '<=', $salary)
-                    ->where('salary_max', '>=', $salary);
-            });
-        }
+                if ($request->filled('date_posted')) {
+                    if ($request->date_posted == 'today') {
+                        $query->whereDate('created_at', now());
+                    } elseif ($request->date_posted == 'week') {
+                        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    } elseif ($request->date_posted == 'month') {
+                        $query->whereMonth('created_at', now()->month);
+                    }
+                }
+            }])
+            ->whereHas('job') // نتأكد أن الوظيفة موجودة
+            ->latest();
 
-        // Date Posted
-        if ($request->filled('date_posted')) {
-            if ($request->date_posted == 'today') {
-                $query->whereDate('created_at', now());
-            } elseif ($request->date_posted == 'week') {
-                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
-            } elseif ($request->date_posted == 'month') {
-                $query->whereMonth('created_at', now()->month);
-            }
-        }
+        $applications = $query->paginate(10);
 
-        // Pagination
-        $jobPosts = $query->paginate(10);
+        // Stats بتكون بناءً على الـ applications
+        $allCount = Application::where('user_id', $user->id)->count();
+        $pendingCount = Application::where('user_id', $user->id)->where('status', 'pending')->count();
+        $acceptedCount = Application::where('user_id', $user->id)->where('status', 'accepted')->count();
+        $rejectedCount = Application::where('user_id', $user->id)->where('status', 'rejected')->count();
 
-        // Categories list
         $categories = \App\Models\Category::all();
 
-        // Stats
-        $allCount       = JobPost::count();
-        $publishedCount = JobPost::where('status', 'published')->count();
-        $draftCount     = JobPost::where('status', 'draft')->count();
-        $closedCount    = JobPost::where('status', 'closed')->count();
-
         return view('candidate.job-posts', compact(
-            'jobPosts',
+            'applications', // نمرر الـ applications بدل jobPosts
             'categories',
             'allCount',
-            'publishedCount',
-            'draftCount',
-            'closedCount'
+            'pendingCount',
+            'acceptedCount',
+            'rejectedCount'
         ));
     }
 

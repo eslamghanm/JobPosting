@@ -46,7 +46,7 @@
                 @endif
 
                 {{-- Status & Date --}}
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-3 mt-3">
                     @php
                     $statusColors = [
                     'pending' => 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
@@ -78,6 +78,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-5-5l5-5m0 0L13 7m5-5v5" />
                         </svg>
                         Edit
+                    </a>
+
+                    <a href="{{ route('candidate.jobs.show', $application->job->id) }}" class="px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        {{ __('View') }}
                     </a>
 
                     <form action="{{ route('candidate.applications.delete', $application) }}" method="POST"

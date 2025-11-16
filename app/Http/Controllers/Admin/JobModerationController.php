@@ -10,45 +10,65 @@ class JobModerationController extends Controller
 {
     public function index(Request $request)
     {
-        $jobs = JobPost::with('company')
+        $jobs = JobPost::with(['user', 'category'])
+            ->withCount('applications')
             ->latest('created_at')
             ->paginate(10);
 
-        return view('admin.jobs.index', compact('jobs'));
+        $statusCounts = [
+            'draft' => JobPost::where('status', 'draft')->count(),
+            'published' => JobPost::where('status', 'published')->count(),
+            'closed' => JobPost::where('status', 'closed')->count(),
+        ];
+
+        $viewMode = 'all';
+
+        return view('admin.jobs.index', compact('jobs', 'statusCounts', 'viewMode'));
     }
 
     public function pending(Request $request)
     {
-        $jobs = JobPost::with('company')
-            ->where('status', 'pending')
+        $jobs = JobPost::with(['user', 'category'])
+            ->withCount('applications')
+            ->where('status', 'draft')
             ->latest('created_at')
             ->paginate(10);
 
-        return view('admin.jobs.index', compact('jobs'));
+        $statusCounts = [
+            'draft' => JobPost::where('status', 'draft')->count(),
+            'published' => JobPost::where('status', 'published')->count(),
+            'closed' => JobPost::where('status', 'closed')->count(),
+        ];
+
+        $viewMode = 'draft';
+
+        return view('admin.jobs.index', compact('jobs', 'statusCounts', 'viewMode'));
     }
 
     public function show(JobPost $job)
     {
-        $job->load(['company','category']);
+        $job->load(['user', 'category'])
+            ->loadCount('applications');
+
         return view('admin.jobs.show', compact('job'));
     }
 
     public function approve(JobPost $job)
     {
         $job->update([
-            'status' => 'approved',
-            'posted_at' => now(),
+            'status' => 'published',
         ]);
 
-        return back()->with('status', 'Job approved successfully.');
+        return back()->with('status', 'Job published successfully.');
     }
 
     public function reject(Request $request, JobPost $job)
     {
         $job->update([
-            'status' => 'rejected',
+            'status' => 'closed',
         ]);
 
-        return back()->with('status', 'Job rejected.');
+        return back()->with('status', 'Job closed/rejected.');
     }
 }
+

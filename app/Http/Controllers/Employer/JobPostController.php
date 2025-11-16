@@ -1,48 +1,88 @@
 <?php
 
 namespace App\Http\Controllers\Employer;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
+use App\Models\Category;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class JobPostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-     public function index(Request $request)
+   public function index(Request $request)
 {
-    // Start base query
-    $query = JobPost::with('user')->latest();
+    $query = JobPost::query();
 
-    // Filter by status if provided
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
+    // Keywords
+    if ($request->filled('keywords')) {
+        $query->where('title', 'like', '%'.$request->keywords.'%')
+              ->orWhere('description', 'like', '%'.$request->keywords.'%');
     }
 
-    // Get filtered results
-    $jobPosts = $query->paginate(10);
+    // Location
+    if ($request->filled('location')) {
+        $query->where('location', 'like', '%'.$request->location.'%');
+    }
 
-    // Counts for Quick Filters
+    // Category
+    if ($request->filled('category')) {
+        $query->where('category_id', $request->category);
+    }
+
+    // Salary Range
+    if ($request->filled('salary')) {
+    $salary = $request->salary;
+
+    $query->where(function ($q) use ($salary) {
+        $q->where('salary_min', '<=', $salary)
+          ->where('salary_max', '>=', $salary);
+    });
+}
+
+
+
+    // Date Posted
+    if ($request->filled('date_posted')) {
+        if ($request->date_posted == 'today') {
+            $query->whereDate('created_at', now());
+        } elseif ($request->date_posted == 'week') {
+            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        } elseif ($request->date_posted == 'month') {
+            $query->whereMonth('created_at', now()->month);
+        }
+    }
+
+     $jobPosts = $query->paginate(10);
+
+    $categories = Category::all(); // <-- add this
+
     $allCount = JobPost::count();
     $publishedCount = JobPost::where('status', 'published')->count();
     $draftCount = JobPost::where('status', 'draft')->count();
     $closedCount = JobPost::where('status', 'closed')->count();
 
     return view('employer.jobs.index', compact(
-        'jobPosts', 'allCount', 'publishedCount', 'draftCount', 'closedCount'
+        'jobPosts', 'categories', 'allCount', 'publishedCount', 'draftCount', 'closedCount'
     ));
 }
+
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('employer.jobs.create');
+        $categories = Category::all();
+        return view('employer.jobs.create', compact('categories'));
+
     }
 
     //image functionality to be added later
@@ -96,30 +136,54 @@ class JobPostController extends Controller
         'comments.user',
         'comments.replies.user',
     ]);
+    
     return view('employer.jobs.show', compact('job'));
 }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(JobPost $job)
-{
-    return view('employer.jobs.edit', compact('job'));
-}
+   public function edit(JobPost $job)
+    {
+        $categories = Category::all();
+        return view('employer.jobs.edit', compact('job', 'categories'));
+    }
 
-public function update(UpdateJobPostRequest $request, JobPost $job)
-{
-    // dd($job);
-    $data = $request->validated();
-    $data['user_id'] = Auth::id();
+    public function update(UpdateJobPostRequest $request, JobPost $job)
+    {
+        $data = $request->validated();
 
+        // ensure arrays for JSON columns (model casts handle storing)
+        $data['skills'] = $request->input('skills', []);
+        $data['qualifications'] = $request->input('qualifications', []);
+        $data['technologies'] = $request->input('technologies', []);
+        $data['benefits'] = $request->input('benefits', []);
 
-    $data['branding_image'] = $this->handleBrandingImage($request, $job->branding_image);
-    $job->update($data);
-    return redirect()
-        ->route('jobs.index')
-        ->with('success', 'Job post updated successfully.');
-}
+        // handle salary fields if present
+        if ($request->filled('salary_min')) {
+            $data['salary_min'] = $request->input('salary_min');
+        }
+        if ($request->filled('salary_max')) {
+            $data['salary_max'] = $request->input('salary_max');
+        }
+
+        // Branding image upload (public disk)
+        if ($request->hasFile('branding_image')) {
+            // delete old file if exists
+            if ($job->branding_image && Storage::disk('public')->exists($job->branding_image)) {
+                Storage::disk('public')->delete($job->branding_image);
+            }
+
+            $path = $request->file('branding_image')->store('branding', 'public');
+            $data['branding_image'] = $path;
+        }
+
+        $job->update($data);
+
+        return redirect()
+            ->route('jobs.index')
+            ->with('success', 'Job updated successfully.');
+    }
 
 
     /**
@@ -127,8 +191,12 @@ public function update(UpdateJobPostRequest $request, JobPost $job)
      */
     public function destroy(JobPost $job)
     {
-        $job->delete();
 
+       if ($job->branding_image && file_exists(storage_path('app/public/storage/' . $job->branding_image))) {
+            unlink(storage_path('app/public/' . $job->branding_image));
+        }
+
+        $job->delete();
         return redirect()->route('jobs.index')
             ->with('success', 'Job deleted successfully!');
     }

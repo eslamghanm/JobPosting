@@ -22,20 +22,24 @@ class UpdateJobPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|min:5',
+            'title' => 'required|string|min:5|max:255',
             'description' => 'required|string',
-            'location' => 'nullable|string|max:255',
             'responsibilities' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'location' => 'nullable|string|max:255',
+            'work_type' => 'nullable|in:remote,on-site,hybrid',
+            'application_deadline' => 'nullable|date',
             'skills' => 'nullable|array',
             'skills.*' => 'string|max:100',
             'qualifications' => 'nullable|array',
             'qualifications.*' => 'string|max:100',
-            'salary_range' => 'nullable|string|max:100',
-            'benefits' => 'nullable|string',
-            'category' => 'nullable|string|max:100',
-            'work_type' => 'nullable|in:remote,on-site,hybrid',
+            'technologies' => 'nullable|array',
+            'technologies.*' => 'string|max:100',
+            'benefits' => 'nullable|array',
+            'benefits.*' => 'string|max:100',
+            'salary_min' => 'nullable|numeric|min:0',
+            'salary_max' => 'nullable|numeric|min:0|gte:salary_min',
             'branding_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'application_deadline' => 'nullable|date',
             'status' => 'nullable|in:draft,published,closed',
         ];
     }

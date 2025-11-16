@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\Employer\JobPostController;
 use App\Http\Controllers\Candidate\JobController as CandidateJobController;
+use App\Http\Controllers\LinkedInController;
+
 
 Route::middleware('auth', 'role:candidate')->group(function () {
     Route::get('/candidate/dashboard', [CandidateController::class, 'dashboard'])->name('candidate.dashboard');
@@ -14,7 +16,7 @@ Route::middleware('auth', 'role:candidate')->group(function () {
     Route::get('/candidate/jobs', [CandidateController::class, 'jobPosts'])
         ->name('candidate.jobs');
 
-    
+
 
     Route::get('/candidate/job/{job}', [CandidateController::class, 'showJob'])
         ->name('candidate.show-job');

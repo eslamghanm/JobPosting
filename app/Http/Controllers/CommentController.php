@@ -16,20 +16,24 @@ class CommentController extends Controller
             'parent_id' => 'nullable|exists:comments,id',
         ]);
 
-        Comment::create([
-            'job_id' => $job->id,
-            'user_id' => Auth::id(),
-            'content' => $request->content,
-            'parent_id' => $request->parent_id,
-        ]);
 
+        $job->comments()->create([
+        'user_id' => Auth::id(),
+        'content' => $request->input('content'),
+        'parent_id' => $request->input('parent_id'),
+    ]);
         return redirect()->back()->with('success', 'Comment added successfully!');
     }
 
     public function destroy(Comment $comment)
     {
-        // Only allow comment author or job owner to delete
-        if (Auth::id() !== $comment->user_id && Auth::id() !== $comment->job->user_id) {
+        $user = Auth::user();
+
+        $canDelete = $user->role === 'admin' ||
+                     $user->id === $comment->user_id ||
+                     ($comment->commentable_type === JobPost::class && $user->id === $comment->commentable->user_id);
+
+        if (!$canDelete) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -37,6 +41,4 @@ class CommentController extends Controller
 
         return back()->with('success', 'Comment deleted successfully.');
     }
-
 }
-

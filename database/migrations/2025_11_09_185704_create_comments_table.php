@@ -8,8 +8,8 @@ return new class extends Migration {
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained('job_posts')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->morphs('commentable');
             $table->text('content');
             $table->foreignId('parent_id')->nullable()->constrained('comments')->cascadeOnDelete();
             $table->timestamps();

@@ -13,15 +13,14 @@ class Comment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'job_id',
         'user_id',
         'content',
         'parent_id',
     ];
 
-    public function job()
+     public function commentable()
     {
-        return $this->belongsTo(JobPost::class, 'job_id');
+        return $this->morphTo();
     }
 
     public function user()

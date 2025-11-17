@@ -37,7 +37,7 @@ class HomeController extends Controller
     public function jobs(Request $request)
     {
         // Always return only published jobs
-    $query = JobPost::where('status', 'published');
+    $query = JobPost::where('status', 'published')->latest();
 
     // Keywords
     if ($request->filled('keywords')) {

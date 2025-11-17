@@ -4,9 +4,9 @@
 
             {{-- Back to Dashboard --}}
             <div class="mb-6">
-                <a href="{{ route('candidate.dashboard') }}"
+                <a href="{{ route('candidate.applications')}}"
                     class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
-                    ← Back to Dashboard
+                    ← Back to Applications
                 </a>
             </div>
 

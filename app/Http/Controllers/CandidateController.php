@@ -76,6 +76,9 @@ class CandidateController extends Controller
     // ------------------------------
     // CandidateController.php
 
+    // ------------------------------
+    // Job Posts + Filters
+    // ------------------------------
     public function jobPosts(Request $request)
     {
         $user = Auth::user();
@@ -85,8 +88,10 @@ class CandidateController extends Controller
             ->with(['job' => function ($query) use ($request) {
                 // نطبق الفلاتر على العلاقة job
                 if ($request->filled('keywords')) {
-                    $query->where('title', 'like', '%' . $request->keywords . '%')
-                        ->orWhere('description', 'like', '%' . $request->keywords . '%');
+                    $query->where(function ($q) use ($request) {
+                        $q->where('title', 'like', '%' . $request->keywords . '%')
+                            ->orWhere('description', 'like', '%' . $request->keywords . '%');
+                    });
                 }
 
                 if ($request->filled('location')) {
@@ -129,7 +134,7 @@ class CandidateController extends Controller
         $categories = \App\Models\Category::all();
 
         return view('candidate.job-posts', compact(
-            'applications', // نمرر الـ applications بدل jobPosts
+            'applications',
             'categories',
             'allCount',
             'pendingCount',

@@ -137,7 +137,7 @@
                             <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ __('No job applications') }}</h3>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('You haven\'t applied to any jobs yet.') }}</p>
                             <div class="mt-6">
-                                <a href="{{ route('candidate.jobs') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">
+                                <a href="{{ route('jobs') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
@@ -148,10 +148,17 @@
                     </div>
                     @else
                     <div class="space-y-4">
+                        {{-- في بداية الـ loop --}}
                         @foreach($collection as $application)
                         @php
                         $post = $application->job;
                         @endphp
+
+                        {{-- نتأكد إن الـ job موجود قبل ما نعرضه --}}
+                        @if(!$post)
+                        @continue
+                        @endif
+
                         <article class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                             <div class="p-6">
                                 <!-- Header: Title + Application Status -->
@@ -204,17 +211,17 @@
                                     </div>
                                     @php $s = $application->status ?? 'pending'; @endphp
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{
-                                        $s === 'accepted' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-                                        ($s === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
-                                        ($s === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' :
-                                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'))
-                                    }}">
+                    $s === 'accepted' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
+                    ($s === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
+                    ($s === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' :
+                    'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'))
+                }}">
                                         <span class="w-2 h-2 mr-2 rounded-full {{
-                                            $s === 'accepted' ? 'bg-green-500 dark:bg-green-400' :
-                                            ($s === 'pending' ? 'bg-yellow-500 dark:bg-yellow-400' :
-                                            ($s === 'rejected' ? 'bg-red-500 dark:bg-red-400' :
-                                            'bg-gray-500 dark:bg-gray-400'))
-                                        }}"></span>
+                        $s === 'accepted' ? 'bg-green-500 dark:bg-green-400' :
+                        ($s === 'pending' ? 'bg-yellow-500 dark:bg-yellow-400' :
+                        ($s === 'rejected' ? 'bg-red-500 dark:bg-red-400' :
+                        'bg-gray-500 dark:bg-gray-400'))
+                    }}"></span>
                                         {{ ucfirst($s) }}
                                     </span>
                                 </div>
@@ -230,9 +237,11 @@
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400"><strong>{{ __('Responsibility:') }}</strong> {{ \Illuminate\Support\Str::limit($firstResp, 100) }}</p>
                                     @endif
                                     @endif
-                                    @if($post->technologies)
+
+                                    {{-- نضيف check علشان technologies --}}
+                                    @if(!empty($post->technologies) && is_array($post->technologies))
                                     <div class="mt-4 flex flex-wrap gap-2">
-                                        @foreach((array)$post->technologies as $technology)
+                                        @foreach($post->technologies as $technology)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                                             {{ $technology }}
                                         </span>
@@ -240,7 +249,7 @@
                                     </div>
                                     @endif
 
-                                    {{-- Benefits: show as chips (up to 3) for a cleaner, professional look --}}
+                                    {{-- Benefits --}}
                                     @if(!empty($post->benefits))
                                     @php
                                     if(is_array($post->benefits)){
@@ -297,7 +306,7 @@
                                         @endif
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <a href="{{ route('jobs.show', $post) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <a href="{{ route('candidate.jobs.show', $application->job->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

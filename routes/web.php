@@ -1,4 +1,5 @@
 
+
 <?php
 
 
@@ -31,6 +32,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+require __DIR__ . '/admin.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/candidate.php';
+require __DIR__ . '/employer.php';
 // Session test routes for debugging
 Route::get('/session-test/set', function (\Illuminate\Http\Request $request) {
     $request->session()->put('test_key', 'test_value');
@@ -40,8 +47,5 @@ Route::get('/session-test/get', function (\Illuminate\Http\Request $request) {
     $val = $request->session()->get('test_key', 'not set');
     return 'Session value is: ' . $val;
 });
-
-require __DIR__ . '/admin.php';
-require __DIR__ . '/auth.php';
-require __DIR__ . '/candidate.php';
-require __DIR__ . '/employer.php';
+// Privacy Policy route
+Route::view('/privacy', 'privacy')->name('privacy');

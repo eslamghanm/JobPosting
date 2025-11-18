@@ -20,15 +20,16 @@ class LinkedInController extends Controller
     public function redirect()
     {
         // request minimal scopes, r_liteprofile + r_emailaddress. Request other scopes if needed and approved by LinkedIn.
-        return Socialite::driver('linkedin')
-            ->scopes(['r_liteprofile', 'r_emailaddress'])
+        return Socialite::driver('linkedin-openid')
+            ->scopes(['openid', 'profile', 'email'])
             ->redirect();
     }
 
     public function callback(Request $request)
     {
+
         try {
-            $linkedinUser = Socialite::driver('linkedin')->user();
+            $linkedinUser = Socialite::driver('linkedin-openid')->user();
             // dd($linkedinUser);
         } catch (\Exception $e) {
             \Log::error('LinkedIn Auth Error', [
@@ -62,7 +63,7 @@ class LinkedInController extends Controller
         // Optionally fetch richer profile async or now
         // dispatch(new \App\Jobs\FetchLinkedInFullProfile($user));
 
-        return redirect()->route('profile')->with('success', 'LinkedIn connected successfully.');
+        return redirect()->route('home')->with('success', 'LinkedIn connected successfully.');
     }
 
     // optional: returns mapped data for UI (like prefill)

@@ -31,6 +31,6 @@ Route::middleware('auth', 'role:candidate')->group(function () {
     Route::put('/candidate/applications/{application}', [CandidateController::class, 'updateApplication'])->name('candidate.applications.update');
     Route::delete('/candidate/applications/{application}', [CandidateController::class, 'deleteApplication'])->name('candidate.applications.delete');
 });
-Route::get('/auth/linkedin-openid', [LinkedInController::class, 'redirect'])->name('linkedin.redirect');
-Route::get('/auth/linkedin-openid/callback', [LinkedInController::class, 'callback'])->name('linkedin.callback');
-Route::get('/linkedin-openid/fetch', [LinkedInController::class, 'fetchProfile'])->name('linkedin.fetch');
+Route::get('/auth/linkedin', [LinkedInController::class, 'redirect'])->name('linkedin.redirect');
+Route::get('/auth/linkedin/callback', [LinkedInController::class, 'callback'])->name('linkedin.callback');
+Route::get('/linkedin/fetch', [LinkedInController::class, 'fetchProfile'])->name('linkedin.fetch');

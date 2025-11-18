@@ -143,7 +143,7 @@
                 {{-- Name --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Full Name</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}"
+                    <input type="text" name="name" value="{{ $linkedin['name'] ?? old('name', $user->name ?? '') }}"
                         placeholder="Enter your full name"
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
                     @error('name')
@@ -154,7 +154,7 @@
                 {{-- Email --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}"
+                    <input type="email" name="email" value="{{ $linkedin['email'] ?? old('email', $user->email ?? '') }}"
                         placeholder="Enter your email"
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
                     @error('email')
@@ -165,7 +165,7 @@
                 {{-- Phone --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Phone Number</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone ?? '') }}"
+                    <input type="text" name="phone" value="{{ $linkedin['phone'] ?? old('phone', $user->phone ?? '') }}"
                         placeholder="Enter your phone number"
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
                     @error('phone')

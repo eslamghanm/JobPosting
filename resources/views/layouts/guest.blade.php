@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
-      x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }" 
-      x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))" 
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))"
       x-bind:class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
@@ -13,27 +13,51 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-    
-    <!-- Dark Mode Toggle -->
-    <div class="fixed top-6 right-6 z-50">
-        <button 
-            @click="darkMode = !darkMode" 
-            class="flex items-center justify-center w-12 h-12 rounded-full border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700 transition-all shadow-lg"
-            title="Toggle Dark Mode"
-        >
-            <template x-if="!darkMode">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zM4.22 5.22a1 1 0 011.42 0L6.64 6.22a1 1 0 11-1.42 1.42L4.22 6.64a1 1 0 010-1.42zM3 10a1 1 0 011-1H5a1 1 0 110 2H4a1 1 0 01-1-1zm7 7a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm6.36-1.36a1 1 0 010 1.42l-1 1a1 1 0 11-1.42-1.42l1-1a1 1 0 011.42 0zM17 9h1a1 1 0 110 2h-1a1 1 0 110-2zm-2.64-3.36a1 1 0 010 1.42L13.93 8a1 1 0 11-1.42-1.42l.43-.43a1 1 0 011.42 0z" />
-                    <path d="M10 5a5 5 0 100 10A5 5 0 0010 5z" />
-                </svg>
-            </template>
-            <template x-if="darkMode">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M17.293 13.293A8 8 0 016.707 2.707 8 8 0 1017.293 13.293z" clip-rule="evenodd" />
-                </svg>
-            </template>
-        </button>
-    </div>
+
+      <!-- Dark / Light Toggle -->
+                <div class="fixed top-7 right-10 z-50"
+     x-data="{ darkMode: localStorage.theme === 'dark' }"
+     x-init="
+        document.documentElement.classList.toggle('dark', darkMode);
+     "
+>
+    <button
+        @click="
+            darkMode = !darkMode;
+            localStorage.theme = darkMode ? 'dark' : 'light';
+            document.documentElement.classList.toggle('dark', darkMode);
+        "
+        class="inline-flex items-center justify-center p-2 rounded-full border border-slate-300 dark:border-slate-700
+               text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50
+               transition-all duration-200"
+        aria-label="Toggle dark mode"
+    >
+
+        <!-- Light Mode Icon (Sun) -->
+        <template x-if="!darkMode">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor"
+                 class="w-5 h-5 text-yellow-500">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 3v2.25M12 18.75V21M4.22 4.22l1.59 1.59M18.19 18.19l1.59 1.59M3 12h2.25M18.75 12H21M4.22 19.78l1.59-1.59M18.19 5.81l1.59-1.59M12 8.25A3.75 3.75 0 1 0 15.75 12 3.75 3.75 0 0 0 12 8.25Z" />
+            </svg>
+        </template>
+
+        <!-- Dark Mode Icon (Moon) -->
+        <template x-if="darkMode">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor"
+                 class="w-5 h-5 text-slate-300">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+            </svg>
+        </template>
+
+    </button>
+</div>
+
 
     <!-- Page Content -->
     {{ $slot }}

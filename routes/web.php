@@ -1,3 +1,5 @@
+
+
 <?php
 
 
@@ -36,3 +38,14 @@ require __DIR__ . '/admin.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/candidate.php';
 require __DIR__ . '/employer.php';
+// Session test routes for debugging
+Route::get('/session-test/set', function (\Illuminate\Http\Request $request) {
+    $request->session()->put('test_key', 'test_value');
+    return 'Session value set. <a href="/session-test/get">Check value</a>';
+});
+Route::get('/session-test/get', function (\Illuminate\Http\Request $request) {
+    $val = $request->session()->get('test_key', 'not set');
+    return 'Session value is: ' . $val;
+});
+// Privacy Policy route
+Route::view('/privacy', 'privacy')->name('privacy');

@@ -166,7 +166,8 @@ class CandidateController extends Controller
                 ->with('error', 'You have already submitted an application for this job.');
         }
 
-        return view('candidate.apply', compact('job', 'user'));
+        $linkedin = auth()->user()->linkedin_data ?? [];
+        return view('candidate.apply', compact('job', 'user', 'linkedin'));
     }
 
 

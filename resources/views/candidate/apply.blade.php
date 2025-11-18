@@ -75,7 +75,7 @@
         Autofill Your Application
     </h2>
 
-    @if(is_null(auth()->user()->linkedin_data)
+    @if(!is_null(auth()->user()->linkedin_data)
 )
         <p class="text-gray-700 dark:text-gray-300 mb-3">
             LinkedIn connected ✔ — You can autofill your data.

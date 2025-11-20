@@ -16,19 +16,22 @@ class JobPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
+    public function index(Request $request)
 {
-    $query = JobPost::query();
+    // Always return only published jobs
+    $query = JobPost::where('status', 'published')->latest();
 
     // Keywords
     if ($request->filled('keywords')) {
-        $query->where('title', 'like', '%'.$request->keywords.'%')
-              ->orWhere('description', 'like', '%'.$request->keywords.'%');
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->keywords . '%')
+              ->orWhere('description', 'like', '%' . $request->keywords . '%');
+        });
     }
 
     // Location
     if ($request->filled('location')) {
-        $query->where('location', 'like', '%'.$request->location.'%');
+        $query->where('location', 'like', '%' . $request->location . '%');
     }
 
     // Category
@@ -38,15 +41,13 @@ class JobPostController extends Controller
 
     // Salary Range
     if ($request->filled('salary')) {
-    $salary = $request->salary;
+        $salary = $request->salary;
 
-    $query->where(function ($q) use ($salary) {
-        $q->where('salary_min', '<=', $salary)
-          ->where('salary_max', '>=', $salary);
-    });
-}
-
-
+        $query->where(function ($q) use ($salary) {
+            $q->where('salary_min', '<=', $salary)
+              ->where('salary_max', '>=', $salary);
+        });
+    }
 
     // Date Posted
     if ($request->filled('date_posted')) {
@@ -59,19 +60,27 @@ class JobPostController extends Controller
         }
     }
 
-     $jobPosts = $query->paginate(10);
+    // Only published jobs will be returned from the query
+    $jobPosts = $query->paginate(10);
 
-    $categories = Category::all(); // <-- add this
+    // Side stats
+    $categories = Category::all();
 
     $allCount = JobPost::count();
     $publishedCount = JobPost::where('status', 'published')->count();
     $draftCount = JobPost::where('status', 'draft')->count();
     $closedCount = JobPost::where('status', 'closed')->count();
 
-    return view('employer.jobs.index', compact(
-        'jobPosts', 'categories', 'allCount', 'publishedCount', 'draftCount', 'closedCount'
+    return view('pages.jobs', compact(
+        'jobPosts',
+        'categories',
+        'allCount',
+        'publishedCount',
+        'draftCount',
+        'closedCount'
     ));
 }
+
 
 
 
@@ -82,29 +91,28 @@ class JobPostController extends Controller
     {
         $categories = Category::all();
         return view('employer.jobs.create', compact('categories'));
-
     }
 
     //image functionality to be added later
 
     private function handleBrandingImage($request, $oldImage = null)
-{
-    if ($request->hasFile('branding_image')) {
-        if ($oldImage && file_exists(storage_path('app/public/' . $oldImage))) {
-            unlink(storage_path('app/public/' . $oldImage));
+    {
+        if ($request->hasFile('branding_image')) {
+            if ($oldImage && file_exists(storage_path('app/public/' . $oldImage))) {
+                unlink(storage_path('app/public/' . $oldImage));
+            }
+
+            $image = $request->file('branding_image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            // storage/app/public/branding_image
+            $image->storeAs('branding_image', $imageName, 'public');
+
+            return 'branding_image/' . $imageName;
         }
 
-        $image = $request->file('branding_image');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-        // storage/app/public/branding_image
-        $image->storeAs('branding_image', $imageName, 'public');
-
-        return 'branding_image/' . $imageName;
+        return $oldImage;
     }
-
-    return $oldImage;
-}
 
 
     /**
@@ -120,30 +128,30 @@ class JobPostController extends Controller
 
         // dd($data);
 
-    JobPost::create($data);
+        JobPost::create($data);
 
-    return redirect()->route('jobs.index')
-        ->with('success', 'Job created successfully!');
+        return redirect()->route('jobs.index')
+            ->with('success', 'Job created successfully!');
     }
 
     /**
      * Display the specified resource.
      */
     public function show(JobPost $job)
-{
-    $job->load([
-        'comments' => fn($q) => $q->whereNull('parent_id')->latest(),
-        'comments.user',
-        'comments.replies.user',
-    ]);
-    
-    return view('employer.jobs.show', compact('job'));
-}
+    {
+        $job->load([
+            'comments' => fn($q) => $q->whereNull('parent_id')->latest(),
+            'comments.user',
+            'comments.replies.user',
+        ]);
+
+        return view('pages.show', compact('job'));
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit(JobPost $job)
+    public function edit(JobPost $job)
     {
         $categories = Category::all();
         return view('employer.jobs.edit', compact('job', 'categories'));
@@ -192,7 +200,7 @@ class JobPostController extends Controller
     public function destroy(JobPost $job)
     {
 
-       if ($job->branding_image && file_exists(storage_path('app/public/storage/' . $job->branding_image))) {
+        if ($job->branding_image && file_exists(storage_path('app/public/storage/' . $job->branding_image))) {
             unlink(storage_path('app/public/' . $job->branding_image));
         }
 

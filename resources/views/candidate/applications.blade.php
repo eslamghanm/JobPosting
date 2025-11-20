@@ -1,4 +1,24 @@
 <x-candidate-layout>
+    <div class="mt-6">
+    @if(auth()->user()->linkedin_id)
+        <div class="flex items-center space-x-4">
+            <img src="{{ auth()->user()->linkedin_data['avatar'] ?? '' }}" alt="LinkedIn Avatar" class="w-12 h-12 rounded-full">
+            <div>
+                <div class="font-medium">{{ auth()->user()->linkedin_data['name'] ?? '' }}</div>
+                <form action="{{ route('linkedin.disconnect') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="text-sm text-red-600 hover:underline">Disconnect LinkedIn</button>
+                </form>
+            </div>
+        </div>
+    @else
+        <a href="{{ route('linkedin.redirect') }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Prefil with LinkedIn
+        </a>
+    @endif
+</div>
+
     <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 p-6 mb-8">
         <div class="flex justify-between items-center mb-6 border-b dark:border-gray-600 pb-3">
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">My Job Applications</h2>
@@ -46,7 +66,7 @@
                 @endif
 
                 {{-- Status & Date --}}
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-3 mt-3">
                     @php
                     $statusColors = [
                     'pending' => 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
@@ -80,6 +100,14 @@
                         Edit
                     </a>
 
+                    <a href="{{ route('candidate.jobs.show', $application->job->id) }}" class="px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        {{ __('View') }}
+                    </a>
+
                     <form action="{{ route('candidate.applications.delete', $application) }}" method="POST"
                         onsubmit="return confirm('Are you sure you want to delete this application?');">
                         @csrf
@@ -99,7 +127,7 @@
         @else
         <div class="text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 py-10 rounded-lg border dark:border-gray-600">
             <p class="text-lg">You haven't applied to any jobs yet.</p>
-            <a href="{{ route('jobs.index') }}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline mt-2 inline-block">
+            <a href="{{ route('jobs') }}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline mt-2 inline-block">
                 Browse Available Jobs →
             </a>
         </div>

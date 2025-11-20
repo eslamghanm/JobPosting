@@ -62,73 +62,84 @@ class CandidateController extends Controller
     // ------------------------------
     public function showJob(JobPost $job)
     {
+        $job->load([
+            'comments' => fn($q) => $q->whereNull('parent_id')->latest(),
+            'comments.user',
+            'comments.replies.user',
+        ]);
+
         return view('candidate.show-job-posts', compact('job'));
     }
 
     // ------------------------------
     // Job Posts + Filters
     // ------------------------------
+    // CandidateController.php
+
+    // ------------------------------
+    // Job Posts + Filters
+    // ------------------------------
     public function jobPosts(Request $request)
     {
-        $query = JobPost::query();
+        $user = Auth::user();
 
-        // Search by title
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
+        // بدل ما نبدأ من JobPost، نبدأ من الـ Applications الخاصة بالمستخدم
+        $query = Application::where('user_id', $user->id)
+            ->with(['job' => function ($query) use ($request) {
+                // نطبق الفلاتر على العلاقة job
+                if ($request->filled('keywords')) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('title', 'like', '%' . $request->keywords . '%')
+                            ->orWhere('description', 'like', '%' . $request->keywords . '%');
+                    });
+                }
 
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+                if ($request->filled('location')) {
+                    $query->where('location', 'like', '%' . $request->location . '%');
+                }
 
-        // Filter by location
-        if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
+                if ($request->filled('category')) {
+                    $query->where('category_id', $request->category);
+                }
 
-        // Filter by work type
-        if ($request->filled('work_type')) {
-            $query->where('work_type', $request->work_type);
-        }
+                if ($request->filled('salary')) {
+                    $salary = $request->salary;
+                    $query->where(function ($q) use ($salary) {
+                        $q->where('salary_min', '<=', $salary)
+                            ->where('salary_max', '>=', $salary);
+                    });
+                }
 
-        // Filter by date posted
-        if ($request->filled('date')) {
-            switch ($request->date) {
-                case 'today':
-                    $query->whereDate('created_at', now());
-                    break;
-                case 'week':
-                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
-                    break;
-                case 'month':
-                    $query->whereMonth('created_at', now()->month);
-                    break;
-            }
-        }
+                if ($request->filled('date_posted')) {
+                    if ($request->date_posted == 'today') {
+                        $query->whereDate('created_at', now());
+                    } elseif ($request->date_posted == 'week') {
+                        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    } elseif ($request->date_posted == 'month') {
+                        $query->whereMonth('created_at', now()->month);
+                    }
+                }
+            }])
+            ->whereHas('job') // نتأكد أن الوظيفة موجودة
+            ->latest();
 
-        // Clone for stats
-        $statsQuery = clone $query;
+        $applications = $query->paginate(10);
 
-        // Paginate jobs
-        $jobs = $query->latest()->paginate(5)->withQueryString();
+        // Stats بتكون بناءً على الـ applications
+        $allCount = Application::where('user_id', $user->id)->count();
+        $pendingCount = Application::where('user_id', $user->id)->where('status', 'pending')->count();
+        $acceptedCount = Application::where('user_id', $user->id)->where('status', 'accepted')->count();
+        $rejectedCount = Application::where('user_id', $user->id)->where('status', 'rejected')->count();
 
-        // Stats
-        $totalJobs     = $statsQuery->count();
-        $publishedJobs = $statsQuery->where('status', 'published')->count();
-        $draftJobs     = $statsQuery->where('status', 'draft')->count();
-        $closedJobs    = $statsQuery->where('status', 'closed')->count();
-
-        // Latest 5 jobs
-        $latestJobs = $statsQuery->latest()->take(5)->get();
+        $categories = \App\Models\Category::all();
 
         return view('candidate.job-posts', compact(
-            'jobs',
-            'totalJobs',
-            'publishedJobs',
-            'draftJobs',
-            'closedJobs',
-            'latestJobs'
+            'applications',
+            'categories',
+            'allCount',
+            'pendingCount',
+            'acceptedCount',
+            'rejectedCount'
         ));
     }
 
@@ -151,11 +162,14 @@ class CandidateController extends Controller
             ->exists();
 
         if ($alreadyApplied) {
-            return back()->with('error', 'You have already applied for this job.');
+            return redirect()->route('candidate.show-job', $job->id)
+                ->with('error', 'You have already submitted an application for this job.');
         }
 
-        return view('candidate.apply', compact('job', 'user'));
+        $linkedin = auth()->user()->linkedin_data ?? [];
+        return view('candidate.apply', compact('job', 'user', 'linkedin'));
     }
+
 
     public function submitApplication(Request $request, JobPost $job)
     {
@@ -172,8 +186,10 @@ class CandidateController extends Controller
             ->exists();
 
         if ($alreadyApplied) {
-            return back()->with('error', 'You already applied to this job.');
+            return redirect()->route('candidate.show-job', $job->id)
+                ->with('error', 'You have already applied to this job.');
         }
+
 
         // Validation
         $request->validate([

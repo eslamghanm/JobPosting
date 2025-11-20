@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Services\ProfilePhotoService;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +24,8 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_photo_path',
+        'linkedin_id',
+        'linkedin_data'
     ];
 
     /**
@@ -45,6 +48,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'linkedin_data' => 'array',
+            'linkedin_token_expires_at' => 'datetime',
+            'linkedin_token' => 'encrypted',
+            'linkedin_refresh_token' => 'encrypted',
         ];
     }
 

@@ -18,29 +18,17 @@ class DatabaseSeeder extends Seeder
         // Create 10 users with candidate profiles
         Candidate::factory(10)->create();
 
-        // Create jobs for testing (assuming Job model ready)
-        JobPost::factory(10)->create();
+        // Create jobs for testing and soft delete the closed ones
+        JobPost::factory(10)
+            ->create()
+            ->each(function (JobPost $job) {
+                if ($job->status === 'closed') {
+                    $job->delete();
+                }
+            });
 
         // Create sample applications
         Application::factory(20)->create();
-
-        // Ensure a single super admin user exists (created only via seeder)
-        $adminEmail = 'superAdmin@gmail.com';
-        $adminPassword = env('ADMIN_PASSWORD', 'password');
-
-        $admin = User::firstOrCreate(
-            ['email' => $adminEmail],
-            [
-                'name' => 'Super Admin',
-                'password' => bcrypt($adminPassword),
-                'role' => 'super_admin',
-            ]
-        );
-
-        // Always enforce role as super_admin for this seeded account
-        if ($admin->role !== 'super_admin') {
-            $admin->forceFill(['role' => 'super_admin'])->save();
-        }
 
         // Optional: demo user
         User::firstOrCreate(
@@ -52,11 +40,12 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-         // Call your seeders here
+        // Call your seeders here
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
             JobPostSeeder::class,
+            ApplicationSeeder::class,
         ]);
     }
 }
